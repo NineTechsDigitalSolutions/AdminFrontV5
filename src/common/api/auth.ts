@@ -3,7 +3,7 @@ import { HttpClient } from '../helpers'
 function AuthService() {
 	return {
 		login: (values: any) => {
-			return HttpClient.post('/login', values)
+			return HttpClient.post('login', values)
 		},
 		logout() {
 			return HttpClient.post('/logout', {})

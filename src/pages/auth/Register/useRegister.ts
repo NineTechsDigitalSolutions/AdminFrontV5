@@ -27,7 +27,17 @@ export default function useRegister() {
 				password: password1,
 			})
 			if (data?.id) {
-				navigate('/auth/login')
+				navigate('/')
+			}
+		} catch (error) {
+			console.error('Registration failed:', error)
+			// Check if error is an instance of Error and has a 'data' property
+			if (typeof error === 'object' && error !== null && 'data' in error) {
+				// Handle the error knowing it has a 'data' property
+			} else {
+				console.error(
+					'Error does not contain data property or is not an object'
+				)
 			}
 		} finally {
 			setLoading(false)

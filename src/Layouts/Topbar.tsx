@@ -1,5 +1,6 @@
 import { Image } from 'react-bootstrap'
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { ThemeSettings, useThemeContext } from '@/common'
 import { Link } from 'react-router-dom'
 
@@ -172,28 +173,40 @@ type TopbarProps = {
 	navOpen?: boolean
 }
 
-interface User {
-	result: {
-		email: string
-		// Include other properties of result if there are any
-	}
-	// Include other properties of User if there are any
-}
+// interface User {
+// 	result: {
+// 		email: string
+// 		token: string
+// 		// Include other properties of result if there are any
+// 	}
+// 	// Include other properties of User if there are any
+// }
 const Topbar = ({ toggleMenu, navOpen }: TopbarProps) => {
-	const [user, setUser] = useState<User | null>(null)
+	const navigate = useNavigate()
+	const [user, setUser] = useState({
+		email: '',
+		token: '',
+	})
 
 	const { userInfo } = useSelector((state: any) => state.auth)
 	const { sideBarType } = useThemeCustomizer()
 	const { width } = useViewport()
 
 	useEffect(() => {
-		const profile = localStorage.getItem('profile')
+		const profile = localStorage.getItem('email')
+		const token = localStorage.getItem('token') || ''
 
 		if (profile !== null) {
-			const userDetails = JSON.parse(profile)
-			setUser(userDetails)
+			setUser({ email: profile, token: token })
 		}
 	}, [])
+
+	const handleLogout = (e: any) => {
+		e.preventDefault()
+		localStorage.removeItem('token')
+		localStorage.removeItem('email')
+		navigate('/')
+	}
 
 	/**
 	 * Toggle the leftmenu when having mobile screen
@@ -306,7 +319,12 @@ const Topbar = ({ toggleMenu, navOpen }: TopbarProps) => {
 						</button>
 					</div>
 					<ul className="topbar-menu d-flex align-items-center gap-3">
-						<div>{user && <div>{user.result.email}</div>}</div>
+						<div>{user && <div>{user.email ? user.email : ''}</div>}</div>
+						{user.token && (
+							<button className="btn" onClick={handleLogout}>
+								Logout
+							</button>
+						)}
 						<li className="dropdown">
 							<LanguageDropdown />
 						</li>

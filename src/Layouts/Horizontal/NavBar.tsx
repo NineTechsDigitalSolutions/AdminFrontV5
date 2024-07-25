@@ -12,7 +12,6 @@ const NavBar = ({ isMenuOpened }: NavbarProps) => {
 				<nav className="navbar navbar-expand-lg">
 					<Collapse in={isMenuOpened}>
 						<div className="collapse navbar-collapse" id="topnav-menu-content">
-							themiya
 							<AppMenu menuItems={getHorizontalMenuItems()} />
 						</div>
 					</Collapse>

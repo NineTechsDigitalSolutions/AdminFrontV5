@@ -1,18 +1,22 @@
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Button, Col, Row } from 'react-bootstrap'
 import AuthLayout from '../AuthLayout'
 import { Link } from 'react-router-dom'
-import * as yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup'
-import useRegister from './useRegister'
+// import * as yup from 'yup'
+// import { yupResolver } from '@hookform/resolvers/yup'
+// import useRegister from './useRegister'
 
 // Components
-import { VerticalForm, FormInput, PageBreadcrumb } from '@/components'
+import { FormInput, PageBreadcrumb } from '@/components'
+import axios from 'axios'
 
-interface UserData {
-	fullname: string
-	email: string
-	password: string
-}
+// interface UserData {
+// 	firstName: string
+// 	lastName: string
+// 	email: string
+// 	password: string
+// }
 const BottomLink = () => {
 	return (
 		<Row>
@@ -21,8 +25,7 @@ const BottomLink = () => {
 					Already have account?{' '}
 					<Link
 						to="/auth/login"
-						className="text-dark fw-bold ms-1 link-offset-3 text-decoration-underline"
-					>
+						className="text-dark fw-bold ms-1 link-offset-3 text-decoration-underline">
 						<b>Log In</b>
 					</Link>
 				</p>
@@ -31,22 +34,48 @@ const BottomLink = () => {
 	)
 }
 const Register = () => {
-	const { loading, register } = useRegister()
+	const navigate = useNavigate()
+	// const { loading, register } = useRegister()
+	const [data, setData] = useState({
+		firstName: '',
+		lastName: '',
+		email: '',
+		password: '',
+	})
 
 	/*
 	 * form validation schema
 	 */
-	const schemaResolver = yupResolver(
-		yup.object().shape({
-			fullname: yup.string().required('Please enter Fullname'),
-			email: yup
-				.string()
-				.required('Please enter Email')
-				.email('Please enter valid Email'),
-			password: yup.string().required('Please enter Password'),
-		})
-	)
+	// const schemaResolver = yupResolver(
+	// 	yup.object().shape({
+	// 		firstName: yup.string().required('Please enter First name'),
+	// 		lastName: yup.string().required('Please enter Last name'),
+	// 		email: yup
+	// 			.string()
+	// 			.required('Please enter Email')
+	// 			.email('Please enter valid Email'),
+	// 		password: yup.string().required('Please enter Password'),
+	// 	})
+	// )
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const { name, value } = e.target
+		setData((prevState) => ({
+			...prevState,
+			[name]: value,
+		}))
+	}
 
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault()
+
+		try {
+			console.log('Form data:', data)
+			const url = 'http://localhost:5002/api/users/register'
+			const { data: res } = await axios.post(url, data)
+			navigate('/')
+			console.log(res.message)
+		} catch (error) {}
+	}
 	return (
 		<>
 			<PageBreadcrumb title="Register" />
@@ -54,13 +83,25 @@ const Register = () => {
 				authTitle="Free Sign Up"
 				helpText="Enter your email address and password to access account."
 				bottomLinks={<BottomLink />}
-				hasThirdPartyLogin
-			>
-				<VerticalForm<UserData> onSubmit={register} resolver={schemaResolver}>
+				hasThirdPartyLogin>
+				<form onSubmit={handleSubmit}>
 					<FormInput
-						label="Full Name"
+						label="First Name"
 						type="text"
-						name="fullname"
+						value={data.firstName}
+						onChange={handleChange}
+						name="firstName"
+						placeholder="Enter your name"
+						containerClass="mb-3"
+						required
+					/>
+
+					<FormInput
+						label="Last Name"
+						type="text"
+						value={data.lastName}
+						onChange={handleChange}
+						name="lastName"
 						placeholder="Enter your name"
 						containerClass="mb-3"
 						required
@@ -69,6 +110,8 @@ const Register = () => {
 					<FormInput
 						label="Email address"
 						type="text"
+						value={data.email}
+						onChange={handleChange}
 						name="email"
 						placeholder="Enter your email"
 						containerClass="mb-3"
@@ -78,6 +121,8 @@ const Register = () => {
 					<FormInput
 						label="Password"
 						type="password"
+						value={data.password}
+						onChange={handleChange}
 						name="password"
 						placeholder="Enter your password"
 						containerClass="mb-3"
@@ -91,14 +136,13 @@ const Register = () => {
 					<div className="mb-0 d-grid text-center">
 						<Button
 							variant="primary"
-							disabled={loading}
+							// disabled={loading}
 							className="fw-semibold"
-							type="submit"
-						>
+							type="submit">
 							Sign Up
 						</Button>
 					</div>
-				</VerticalForm>
+				</form>
 			</AuthLayout>
 		</>
 	)

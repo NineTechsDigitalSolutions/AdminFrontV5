@@ -31,7 +31,7 @@ const users: User[] = [
 ]
 
 export default function configureFakeBackend() {
-	mock.onPost('/login').reply(function (config) {
+	mock.onPost('/user/login').reply(function (config) {
 		return new Promise(function (resolve, reject) {
 			setTimeout(function () {
 				// get parameters from post request
