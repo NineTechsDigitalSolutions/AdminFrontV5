@@ -6,70 +6,11 @@
   <link rel="/favicon.ico" type="image/svg+xml" href="/logo.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Library</title>
-  <style>
-    #splash-screen {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      background: white;
-      display: flex;
-      height: 100%;
-      width: 100%;
-      transform: translate(-50%, -50%);
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      opacity: 1;
-      transition: all 15s linear;
-      overflow: hidden;
-    }
-
-    #splash-screen.remove {
-      animation: fadeout 0.7s forwards;
-      z-index: 0;
-    }
-
-    @keyframes fadeout {
-      to {
-        opacity: 0;
-        visibility: hidden;
-      }
-    }
-  </style>
 </head>
 
 <body>
   <div id="root"></div>
-  <div id="splash-screen">
-    <img alt="Logo" class="light" src="/images/logo-dark.png" style="height: 10%" />
-  </div>
   <script type="module" src="/src/main.tsx"></script>
-  <script>
-    // Select the target node to observe
-    const targetNode = document.getElementById('root');
-
-    // Options for the observer (which mutations to observe)
-    const config = { childList: true };
-
-    // Callback function to execute when mutations are observed
-    const callback = function(mutationsList, observer) {
-      for (const mutation of mutationsList) {
-        if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-          document.getElementById('splash-screen')?.classList.add('remove');
-          observer.disconnect(); // Stop observing after the first change
-          break;
-        }
-      }
-    };
-
-    // Create an observer instance linked to the callback function
-    const observer = new MutationObserver(callback);
-
-    // Start observing the target node for configured mutations
-    if (targetNode) {
-      observer.observe(targetNode, config);
-    }
-  </script>
 </body>
 
 </html>
