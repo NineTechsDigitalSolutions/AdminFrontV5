@@ -15,7 +15,7 @@ const BottomLink = () => {
 				<p className="text-dark-emphasis">
 					Back To{' '}
 					<Link
-						to="/auth/login"
+						to="/login"
 						className="text-dark fw-bold ms-1 link-offset-3 text-decoration-underline"
 					>
 						<b>Log In</b>

@@ -7,7 +7,7 @@ import PrivateRoute from './PrivateRoute'
 // lazy load all the views
 
 // auth
-const Login = React.lazy(() => import('../pages/auth/Login'))
+const Login = React.lazy(() => import('../pages/login'))
 const Register = React.lazy(() => import('../pages/auth/Register'))
 const Logout = React.lazy(() => import('../pages/auth/Logout'))
 const ForgotPassword = React.lazy(() => import('../pages/auth/ForgotPassword'))

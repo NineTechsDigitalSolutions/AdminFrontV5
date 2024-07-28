@@ -21,7 +21,7 @@ const PrivateRoute = ({ component: Component, roles, ...rest }: any) => {
 					return (
 						<Navigate
 							to={{
-								pathname: '/auth/login',
+								pathname: '/login',
 							}}
 						/>
 					)

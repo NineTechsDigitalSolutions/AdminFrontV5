@@ -234,7 +234,7 @@ const MENU_ITEMS: MenuItemTypes[] = [
 	// 		{
 	// 			key: 'auth-login',
 	// 			label: 'Login',
-	// 			url: '/auth/login',
+	// 			url: '/login',
 	// 			parentKey: 'auth',
 	// 		},
 	// 		{
@@ -705,7 +705,7 @@ const HORIZONTAL_MENU_ITEMS: MenuItemTypes[] = [
 					{
 						key: 'auth-login',
 						label: 'Login',
-						url: '/auth/login',
+						url: '/login',
 						parentKey: 'pages',
 					},
 					{
