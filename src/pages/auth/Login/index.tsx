@@ -1,4 +1,4 @@
-import { Button, Col, Row, Spinner } from 'react-bootstrap'
+import { Button, Col, Row } from 'react-bootstrap'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
@@ -6,11 +6,12 @@ import AuthLayout from '../AuthLayout'
 
 // components
 import { VerticalForm, FormInput, PageBreadcrumb } from '@/components'
-import { useLoginMutation } from '@/api/authSlice'
+// import { useLoginMutation } from '@/api/authSlice'
 import { useState } from 'react'
-import { toast } from 'react-toastify'
-import { useDispatch, useSelector } from 'react-redux'
-import { setUser } from '@/features/authSlice'
+// import { toast } from 'react-toastify'
+// import { useSelector } from 'react-redux'
+// import { setUser } from '@/features/authSlice'
+import axios from 'axios'
 
 interface UserData {
 	email: string
@@ -40,38 +41,37 @@ const schemaResolver = yupResolver(
 	})
 )
 const Login = () => {
-	const dispatch = useDispatch()
+	// const dispatch = useDispatch()
 	const navigate = useNavigate()
 
-	const user = useSelector((state: any) => state.auth?.userInfo?.token)
+	const [data, setData] = useState({
+		email: '',
+		password: '',
+	})
 
-	const [email, setEmail] = useState('user@gmail.com')
-	const [password, setPassword] = useState('12345678')
-	const [login, { isLoading }] = useLoginMutation()
+	const user = localStorage.getItem('token') || ''
 
-	const submitHandler = async () => {
-		// if (!email || !password) {
-		// 	toast.error('Please fill in all fields')
-		// 	return
-		// }
-		// try {
-		// 	const res: any = await login({ email, password })
-		// 	if (res?.data?.token) {
-		// 		toast.success(res?.data?.message)
-		// 		console.log(res.data.user)
+	// const [email, setEmail] = useState('user@gmail.com')
+	// const [password, setPassword] = useState('12345678')
+	// const [login, { isLoading }] = useLoginMutation()
 
-		// 		dispatch(setUser({ token: res?.data?.token, userInfo: res?.data }))
-		// 		navigate('/dashboard', { replace: true })
-		// 	} else if (res?.error) {
-		// 		toast.error(res?.error?.data?.message)
-		// 	}
-		// } catch (error) {
-		// 	toast.error('Something went wrong')
-		// 	console.log('Error', error)
-		// }
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const { name, value } = e.target
+		setData({ ...data, [name]: value })
+	}
 
-		if (email === 'dushanuop@gmail.com' && password === 'Dushan@123') {
+	const handleSubmit = async (e: any) => {
+		e.preventDefault()
+		try {
+			console.log('Form data:', data)
+			const url = 'http://13.215.35.0:5002/api/auth/librarian/login'
+			const { data: res } = await axios.post(url, data)
+			localStorage.setItem('token', res.token)
+			localStorage.setItem('email', res.email)
 			navigate('/dashboard')
+			console.log(res.message)
+		} catch (error) {
+			console.log(error)
 		}
 	}
 
@@ -79,7 +79,7 @@ const Login = () => {
 		<>
 			<PageBreadcrumb title="Log In" />
 
-			{user && <Navigate to="/" replace />}
+			{user !== '' && <Navigate to="/dashboard" replace />}
 
 			<AuthLayout
 				authTitle="Sign In"
@@ -87,7 +87,7 @@ const Login = () => {
 				bottomLinks={<BottomLinks />}
 				hasThirdPartyLogin>
 				<VerticalForm<UserData>
-					onSubmit={submitHandler}
+					onSubmit={handleSubmit}
 					resolver={schemaResolver}>
 					<FormInput
 						label="Email address"
@@ -95,18 +95,18 @@ const Login = () => {
 						name="email"
 						placeholder="Enter your email"
 						containerClass="mb-3"
-						onChange={(e) => setEmail(e.target.value)}
-						defaultValue={email}
+						onChange={handleChange}
+						value={data.email}
 						required
 					/>
 					<FormInput
 						label="Password"
 						type="Password"
-						name="Password"
+						name="password"
 						placeholder="Enter your Password"
 						containerClass="mb-3"
-						onChange={(e) => setPassword(e.target.value)}
-						defaultValue={password}
+						onChange={handleChange}
+						value={data.password}
 						required
 					/>
 					{/* <FormInput
@@ -135,12 +135,12 @@ const Login = () => {
 							className="w-100"
 							type="submit"
 							// disabled={loading}
-							onClick={submitHandler}>
-							{isLoading ? (
+							onClick={handleSubmit}>
+							{/* {isLoading ? (
 								<Spinner size="sm" className="me-1" />
 							) : (
 								<i className="ri-login-circle-fill me-1" />
-							)}
+							)} */}
 							<>
 								<span className="fw-bold">Log In</span>
 							</>
