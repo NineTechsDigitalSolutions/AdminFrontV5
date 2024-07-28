@@ -45,9 +45,30 @@
   </div>
   <script type="module" src="/src/main.tsx"></script>
   <script>
-    document.querySelector('#root')?.addEventListener('DOMNodeInserted', () => {
-      document.querySelector('#splash-screen')?.classList.add('remove');
-    })
+    // Select the target node to observe
+    const targetNode = document.getElementById('root');
+
+    // Options for the observer (which mutations to observe)
+    const config = { childList: true };
+
+    // Callback function to execute when mutations are observed
+    const callback = function(mutationsList, observer) {
+      for (const mutation of mutationsList) {
+        if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+          document.getElementById('splash-screen')?.classList.add('remove');
+          observer.disconnect(); // Stop observing after the first change
+          break;
+        }
+      }
+    };
+
+    // Create an observer instance linked to the callback function
+    const observer = new MutationObserver(callback);
+
+    // Start observing the target node for configured mutations
+    if (targetNode) {
+      observer.observe(targetNode, config);
+    }
   </script>
 </body>
 
